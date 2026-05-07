@@ -181,6 +181,24 @@ class StudyProvider extends ChangeNotifier {
     if (s == null) return;
     s.isCompleted = !s.isCompleted;
     await s.save();
+
+    // Link session completion to topic completion
+    final topic = _topicBox.get(s.topicId);
+    if (topic != null) {
+      if (s.isCompleted) {
+        // If session completed, mark topic as completed
+        topic.status = 2; // Completed
+        topic.completedAt = DateTime.now();
+      } else {
+        // If session un-completed, mark topic as In Progress (status 1) 
+        // if it was completed by this session toggle
+        topic.status = 1; 
+        topic.completedAt = null;
+      }
+      await topic.save();
+      _topics = _topicBox.values.toList();
+    }
+
     _sessions = _sessionBox.values.toList();
     notifyListeners();
   }

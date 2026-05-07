@@ -30,52 +30,54 @@ class DashboardScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 120,
             floating: true,
             pinned: true,
             backgroundColor: AppTheme.surface,
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding:
-                  const EdgeInsets.only(left: 20, bottom: 16),
-              title: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Study Dashboard',
-                    style: TextStyle(
-                      color: AppTheme.onSurface,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: cp.isOnline
-                              ? AppTheme.success
-                              : AppTheme.accent,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        cp.isOnline ? 'Online' : 'Offline',
-                        style: TextStyle(
-                          color: cp.isOnline
-                              ? AppTheme.success
-                              : AppTheme.accent,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            title: const Text(
+              'Study Dashboard',
+              style: TextStyle(
+                color: AppTheme.onSurface,
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
               ),
             ),
+            actions: [
+              Container(
+                margin: const EdgeInsets.only(right: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: (cp.isOnline ? AppTheme.success : AppTheme.accent)
+                      .withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: cp.isOnline
+                            ? AppTheme.success
+                            : AppTheme.accent,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      cp.isOnline ? 'Online' : 'Offline',
+                      style: TextStyle(
+                        color: cp.isOnline
+                            ? AppTheme.success
+                            : AppTheme.accent,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
 
           SliverPadding(
