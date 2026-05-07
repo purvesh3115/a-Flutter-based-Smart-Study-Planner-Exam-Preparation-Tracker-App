@@ -158,7 +158,7 @@ class _SessionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sp = context.read<StudyProvider>();
+    final sp = context.watch<StudyProvider>();
     final subject = sp.getSubjectById(session.subjectId);
     final color = subject != null
         ? Color(int.parse('FF${subject.colorHex.replaceAll('#', '')}', radix: 16))
@@ -222,17 +222,25 @@ class _SessionTile extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Checkbox(
-                          value: session.isCompleted,
-                          activeColor: AppTheme.success,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4)),
-                          onChanged: (_) =>
-                              sp.toggleSessionCompleted(session.id),
-                        ),
+                        if (session.isCompleted)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppTheme.success.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.check_circle_rounded, color: AppTheme.success, size: 14),
+                                SizedBox(width: 4),
+                                Text('Done', style: TextStyle(color: AppTheme.success, fontSize: 12, fontWeight: FontWeight.w600)),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
-                    const Divider(height: 24),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         const Icon(Icons.access_time_rounded,
@@ -252,13 +260,59 @@ class _SessionTile extends StatelessWidget {
                           style: const TextStyle(
                               color: AppTheme.onSurfaceMuted, fontSize: 12),
                         ),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline_rounded,
-                              size: 18, color: AppTheme.accent),
-                          onPressed: () => sp.deleteSession(session.id),
-                          constraints: const BoxConstraints(),
-                          padding: EdgeInsets.zero,
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    // Prominent Complete / Undo button
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 40,
+                            child: ElevatedButton.icon(
+                              onPressed: () => sp.toggleSessionCompleted(session.id),
+                              icon: Icon(
+                                session.isCompleted
+                                    ? Icons.undo_rounded
+                                    : Icons.check_circle_outline_rounded,
+                                size: 18,
+                              ),
+                              label: Text(
+                                session.isCompleted ? 'Undo Complete' : 'Mark Complete',
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: session.isCompleted
+                                    ? AppTheme.surfaceVariant
+                                    : AppTheme.success,
+                                foregroundColor: session.isCompleted
+                                    ? AppTheme.onSurfaceMuted
+                                    : Colors.white,
+                                elevation: 0,
+                                side: session.isCompleted
+                                    ? const BorderSide(color: Color(0xFF3A3857))
+                                    : null,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: IconButton(
+                            onPressed: () => sp.deleteSession(session.id),
+                            icon: const Icon(Icons.delete_outline_rounded,
+                                size: 18, color: AppTheme.accent),
+                            style: IconButton.styleFrom(
+                              backgroundColor: AppTheme.accent.withOpacity(0.1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
